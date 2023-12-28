@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <title>Document</title>
+  <style>
+    .row {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4 col-md-6">
+    <div class="row">
+      <label for="txtNombre">Nombre y Apellido</label>
+      <input type="text" id="txtNombre" class="form-control" />
+    </div>
+    <div class="row">
+      <label for="selectCarrera">Carrera</label>
+      <select id="selectCarrera" class="form-select">
+        <option value="-1">No Seleccionada</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="selectAsignatura">Asignatura</label>
+      <select id="selectAsignatura" class="form-select">
+        <option value="-1">No Seleccionada</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="txtNombre">Nota 1</label>
+        <input type="number" id="txtNota1" class="form-control" />
+      </div>
+      <div class="col-md-4">
+        <label for="txtNombre">Nota 2</label>
+        <input type="number" id="txtNota2" class="form-control" />
+      </div>
+      <div class="col-md-4">
+        <label for="txtNombre">Nota 3</label>
+        <input type="number" id="txtNota3" class="form-control" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <button class="btn btn-success" id="guardarNota">
+          Guardar Nota <i class="fas fa-folder-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Asignatura</th>
+            <th style="max-width: 58px">Nota 1</th>
+            <th style="max-width: 58px">Nota 2</th>
+            <th style="max-width: 58px">Nota 3</th>
+            <th>Promedio</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-6 offset-md-3">
+        <button class="btn btn-warning" id="LimpiarTODO">
+          Limpiar Todo <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const carreras = ["Informática", "Enfermería"];
+    const asignaturasInfo = [
+      { id: 1, nombre: "POO" },
+      { id: 2, nombre: "BD" },
+      { id: 3, nombre: "FrontEnd" },
+    ];
+    const asignaturasEnf = [
+      { id: 1, nombre: "Inyecciones" },
+      { id: 2, nombre: "Rompehuesos" },
+      { id: 3, nombre: "Fracturas" },
+    ];
+
+    const selectCarrera = document.getElementById("selectCarrera");
+    const selectAsignatura = document.getElementById("selectAsignatura");
+    const guardarNota = document.getElementById("guardarNota");
+    const txtNombre = document.getElementById("txtNombre");
+    const txtNota1 = document.getElementById("txtNota1");
+    const txtNota2 = document.getElementById("txtNota2");
+    const txtNota3 = document.getElementById("txtNota3");
+    const cuerpoTabla = document.getElementById("cuerpoTabla");
+    const LimpiarTODO = document.getElementById("LimpiarTODO");
+
+    selectCarrera.innerHTML = "<option value='-1'>No seleccionado</option>";
+    carreras.forEach((valor) => {
+      var option = document.createElement("option");
+      option.innerText = valor;
+      option.value = valor;
+      selectCarrera.appendChild(option);
+    });
+
+    selectCarrera.addEventListener("change", () => {
+      selectAsignatura.innerHTML = "<option value='-1'>No seleccionado</option>";
+      if (selectCarrera.value == "Informática") {
+        asignaturasInfo.forEach((valor) => {
+          var option = document.createElement("option");
+          option.innerText = valor.nombre;
+          option.value = valor.id;
+          selectAsignatura.appendChild(option);
+        });
+      } else if (selectCarrera.value == "Enfermería") {
+        asignaturasEnf.forEach((valor) => {
+          var option = document.createElement("option");
+          option.innerText = valor.nombre;
+          option.value = valor.id;
+          selectAsignatura.appendChild(option);
+        });
+      }
+    });
+
+    guardarNota.addEventListener("click", () => {
+      if (
+        selectCarrera.value == "-1" ||
+        selectAsignatura.value == "-1" ||
+        txtNombre.value == "" ||
+        txtNota1.value == "" ||
+        txtNota2.value == "" ||
+        txtNota3.value == ""
+      ) {
+        alert("Error, ingrese datos correspondientes");
+        return;
+      }
+
+      if (
+        txtNota1.value >= 1 &&
+        txtNota1.value <= 7 &&
+        txtNota2.value >= 1 &&
+        txtNota2.value <= 7 &&
+        txtNota3.value >= 1 &&
+        txtNota3.value <= 7
+      ) {
+        var tr = document.createElement("tr");
+        cuerpoTabla.appendChild(tr);
+
+        var tdNombreyAPELLIDO = document.createElement("td");
+        tdNombreyAPELLIDO.innerText = txtNombre.value;
+        tr.appendChild(tdNombreyAPELLIDO);
+
+        var tdAsignatura = document.createElement("td");
+        var capturarAsignatura = [];
+        if (selectCarrera.value == "Informática") {
+          capturarAsignatura = asignaturasInfo.filter((x) => x.id == selectAsignatura.value);
+        } else if (selectCarrera.value == "Enfermería") {
+          capturarAsignatura = asignaturasEnf.filter((x) => x.id == selectAsignatura.value);
+        }
+        tdAsignatura.innerText = capturarAsignatura[0].nombre;
+        tr.appendChild(tdAsignatura);
+
+        var tdNota1 = document.createElement("td");
+        tdNota1.innerText = txtNota1.value;
+        tr.appendChild(tdNota1);
+
+        var tdNota2 = document.createElement("td");
+        tdNota2.innerText = txtNota2.value;
+        tr.appendChild(tdNota2);
+
+        var tdNota3 = document.createElement("td");
+        tdNota3.innerText = txtNota3.value;
+        tr.appendChild(tdNota3);
+
+        var tdPromedio = document.createElement("td");
+        var promedio =
+          (parseFloat(txtNota1.value) + parseFloat(txtNota2.value) + parseFloat(txtNota3.value)) / 3;
+        tdPromedio.innerText = promedio.toFixed(2);
+        tr.appendChild(tdPromedio);
+
+        var tdResultado = document.createElement("td");
+        tdResultado.innerText = promedio >= 4 ? "Aprobado" : "Reprobado";
+        tr.appendChild(tdResultado);
+
+        LimpiarTODO.addEventListener("click", () => {
+          cuerpoTabla.removeChild(tr);
+        });
+      } else {
+        alert("Nota inválida");
+      }
+    });
+  </script>
+</body>
+</html>
